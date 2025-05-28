@@ -20,16 +20,16 @@ public class PostController {
     @Autowired
     private PostService service;
 
-
     @GetMapping
     public ApiResponse<PageResponse<PostResponse>> findByName(
+            @RequestParam(required = false) String userId,
             @RequestParam(required = false) String title,
             @RequestParam(required = false) String content,
             @RequestParam(required = false, defaultValue = "0") int page,
             @RequestParam(required = false, defaultValue = "10") int size) {
         PageRequest pageable = PageRequest.of(page, size);
         return ApiResponse.<PageResponse<PostResponse>>builder()
-                .data(service.findPost(title, content, pageable))
+                .data(service.findPost(userId, title, content, pageable))
                 .build();
     }
 
@@ -46,5 +46,6 @@ public class PostController {
                 .data(service.updatePost(request))
                 .build();
     }
+
 }
 

@@ -29,7 +29,7 @@ public class PostService{
         return PostEntity.builder()
                 .content(postCreationRequest.getContent())
                 .title(postCreationRequest.getTitle())
-                .userId(userIdService.findUserIdEntity(postCreationRequest.getUserId()))
+                .userId(userIdService.getCurrentUser())
                 .build();
     }
 
@@ -53,15 +53,15 @@ public class PostService{
 
     public PostResponse updatePost(PostCreationRequest request) throws AppException {
         PostEntity entity = toPostEntity(request);
-
         entity = repo.save(entity);
         return toPostResponse(entity);
     }
 
-    public PageResponse<PostResponse> findPost(String title, String content, PageRequest pageable)  {
+    public PageResponse<PostResponse> findPost(String userId, String title, String content, PageRequest pageable)  {
         Specification<PostEntity> spec = Specification
                 .where(PostSpecification.hasTitle(title))
-                .and(PostSpecification.hasContent(content));
+                .and(PostSpecification.hasContent(content))
+                .and(PostSpecification.hasUserId(userId));
         Page<PostEntity> list = repo.findAll(spec, pageable);
         return PageResponse.<PostResponse>builder()
                 .content(list.stream().map(this::toPostResponse).collect(Collectors.toList()))

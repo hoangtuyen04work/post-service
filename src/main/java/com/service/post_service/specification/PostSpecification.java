@@ -13,4 +13,9 @@ public class PostSpecification {
         return (content == null || content.isBlank()) ? null : (root, query, cb) ->
                 cb.like(cb.lower(root.get("content")), "%" + content.toLowerCase() + "%");
     }
+
+    public static Specification<PostEntity> hasUserId(String userId) {
+        return (userId == null || userId.isBlank()) ? null : (root, query, cb) ->
+                cb.like(cb.lower(root.get("userId").get("userId")), "%" + userId + "%");
+    }
 }
